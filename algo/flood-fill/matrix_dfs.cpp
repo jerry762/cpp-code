@@ -11,6 +11,10 @@
 #define COLUMN 20
 #define SPEED 1000 //* 1000 = 1s
 
+HANDLE stdHandle;
+COORD coord;
+
+
 struct value
 {
     int data = 0;
@@ -31,6 +35,19 @@ int main()
     std::uniform_int_distribution<int> distColumn(0, COLUMN - 1);
 
     std::array<std::array<value, COLUMN>, ROW> arr;
+
+
+    CONSOLE_CURSOR_INFO ci;
+
+    stdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    GetConsoleCursorInfo(stdHandle, &ci);
+    ci.bVisible = false;
+    SetConsoleCursorInfo(stdHandle, &ci);
+
+    coord.X = 0;
+    coord.Y = 0;
+
 
     // DFSMatrix(arr, std::make_pair(distRow(gen), distColumn(gen))); //* random
     DFSMatrix(arr, std::make_pair(0, 0)); //* start at top-left corner
@@ -60,7 +77,7 @@ void DFSMatrix(std::array<std::array<value, COLUMN>, ROW> &arr, std::pair<int, i
 
 void printMatrix(std::array<std::array<value, COLUMN>, ROW> &arr)
 {
-    system("cls");
+    SetConsoleCursorPosition(stdHandle, coord);
 
     for (const auto &i : arr)
     {
